@@ -1,0 +1,14 @@
+build.sh
+  h_38f3cf6cff08a7 50,67,217
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.2",
+  "base_commit_sha": "1518c6be89a51755fe6899b5792f5cdaf49af06f",
+  "prompts": {},
+  "humans": {
+    "h_38f3cf6cff08a7": {
+      "author": "IceShip <15985770423@163.com>"
+    }
+  }
+}
