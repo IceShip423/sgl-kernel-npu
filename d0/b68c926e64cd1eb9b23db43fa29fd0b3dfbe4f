@@ -1,0 +1,54 @@
+build.sh
+  h_38f3cf6cff08a7 37,39-40,46-51,53-55,61-68,217
+  s_470f51f5132d72::t_ec1fdd586072dc 52
+  s_b70fb83ebabd55::t_7fbcda916c00b2 216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.2",
+  "base_commit_sha": "d0b68c926e64cd1eb9b23db43fa29fd0b3dfbe4f",
+  "prompts": {},
+  "humans": {
+    "h_38f3cf6cff08a7": {
+      "author": "IceShip <15985770423@163.com>"
+    }
+  },
+  "sessions": {
+    "s_470f51f5132d72": {
+      "agent_id": {
+        "tool": "trae-cue",
+        "id": "ai_tab-icr-b879e619-1f2f-4a27-b7f3-4431eb3239e4",
+        "model": "default"
+      },
+      "human_author": "IceShip <15985770423@163.com>",
+      "custom_attributes": {
+        "source_scene": "cue",
+        "edit_kind": "file_edit",
+        "tool": "trae-cue",
+        "external_session_id": "icr-b879e619-1f2f-4a27-b7f3-4431eb3239e4",
+        "client_type": "plugin"
+      }
+    },
+    "s_b70fb83ebabd55": {
+      "agent_id": {
+        "tool": "trae",
+        "id": "6a7ad422fc89b9832d2b447c",
+        "model": "glm-5.2"
+      },
+      "human_author": "IceShip <15985770423@163.com>",
+      "custom_attributes": {
+        "runtime_client": "trae-tob-git-ai",
+        "tool_id": "icube:applyChatSnapshotPatch",
+        "session_id": "6a7ad422fc89b9832d2b447c",
+        "source_scene": "agent",
+        "operation_id": "6a7ad8effc89b9832d2b4504",
+        "external_session_id": "6a7ad422fc89b9832d2b447c",
+        "tool_use_id": "6a7ad8effc89b9832d2b4504",
+        "edit_kind": "file_edit",
+        "tool_type": "builtin",
+        "client_type": "ide",
+        "dedupe_key": "6a7ad422fc89b9832d2b447c:6a7ad8effc89b9832d2b4504:afterEdit:48b2cbd2"
+      }
+    }
+  }
+}
