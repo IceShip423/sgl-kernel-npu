@@ -1,0 +1,37 @@
+csrc/pytorch_extensions.cpp
+  s_265b04e334a7aa::t_10205b8447f05f 231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.2",
+  "base_commit_sha": "ccf5e4d78c5a9619e165338ddbb2a6dbda6ca46e",
+  "prompts": {},
+  "humans": {
+    "h_38f3cf6cff08a7": {
+      "author": "IceShip <15985770423@163.com>"
+    }
+  },
+  "sessions": {
+    "s_265b04e334a7aa": {
+      "agent_id": {
+        "tool": "trae",
+        "id": "6a7d85fbbc96d5fb8f37f78f",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "IceShip <15985770423@163.com>",
+      "custom_attributes": {
+        "source_scene": "agent",
+        "dedupe_key": "6a7d85fbbc96d5fb8f37f78f:6a7d8937bc96d5fb8f37f818:afterEdit:bdd7f8b3",
+        "session_id": "6a7d85fbbc96d5fb8f37f78f",
+        "tool_id": "icube:applyChatSnapshotPatch",
+        "external_session_id": "6a7d85fbbc96d5fb8f37f78f",
+        "edit_kind": "file_edit",
+        "tool_type": "builtin",
+        "operation_id": "6a7d8937bc96d5fb8f37f818",
+        "tool_use_id": "6a7d8937bc96d5fb8f37f818",
+        "client_type": "ide",
+        "runtime_client": "trae-tob-git-ai"
+      }
+    }
+  }
+}
