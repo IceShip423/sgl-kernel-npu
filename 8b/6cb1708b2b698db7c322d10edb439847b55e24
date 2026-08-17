@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.2",
+  "base_commit_sha": "8b6cb1708b2b698db7c322d10edb439847b55e24",
+  "prompts": {},
+  "humans": {
+    "h_38f3cf6cff08a7": {
+      "author": "IceShip <15985770423@163.com>"
+    }
+  }
+}
