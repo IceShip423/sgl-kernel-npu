@@ -49,20 +49,3 @@ def test_mhc_pre_sinkhorn(tokens, hidden, mode, dtype, hc_eps, norm_eps):
         and dtype == torch.bfloat16
         and hc_eps == 1e-6,
     )
-
-
-@pytest.mark.extra_checks
-@pytest.mark.parametrize(
-    "change,match",
-    [
-        ({"hc_mult": 8}, "hc_mult"),
-        ({"num_iters": 1}, "num_iters"),
-        ({"hc_eps": 0}, "positive"),
-        ({"norm_eps": float("nan")}, "finite"),
-    ],
-)
-def test_reject_invalid_attributes(change, match):
-    from sgl_kernel_npu.operators.hyper_conn import mhc_pre_sinkhorn
-
-    with pytest.raises(ValueError, match=match):
-        mhc_pre_sinkhorn(*generate_data(1, 128, torch.bfloat16, "normal"), **change)

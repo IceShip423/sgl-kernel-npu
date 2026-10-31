@@ -4,7 +4,7 @@
 
 | 实现 | arch22 | arch35 |
 | --- | --- | --- |
-| cann | 待硬件验证 | 未开放 |
+| cann | 待硬件验证 | 待硬件验证 |
 | torch_native | 待硬件验证 | 待硬件验证 |
 
 ## 函数原型
@@ -28,27 +28,27 @@ def mhc_pre_sinkhorn(x, phi, alpha, bias, hc_mult=4, num_iters=20, hc_eps=1e-6, 
 
 | 参数 | 类型 | 约束 | 默认 |
 | --- | --- | --- | --- |
-| x | Tensor | [T,4,D], FP16/BF16 | 必填 |
-| phi | Tensor | [24,4*D], FP32 | 必填 |
+| x | Tensor | [T,N,D], FP16/BF16 | 必填 |
+| phi | Tensor | [(2+N)*N,N*D], FP32 | 必填 |
 | alpha | Tensor | [3], FP32 | 必填 |
-| bias | Tensor | [24], FP32 | 必填 |
-| hc_mult | int | 仅支持 4 | 4 |
-| num_iters | int | 仅支持 20 | 20 |
-| hc_eps | float | 有限正数 | 1e-6 |
-| norm_eps | float | 有限正数 | 1e-6 |
+| bias | Tensor | [(2+N)*N], FP32 | 必填 |
+| hc_mult | int | 残差流数量 N，支持范围由后端决定 | 4 |
+| num_iters | int | Sinkhorn 迭代次数，支持范围由后端决定 | 20 |
+| hc_eps | float | 透传后端 | 1e-6 |
+| norm_eps | float | 透传后端 | 1e-6 |
 | impl | str | auto / cann / torch_native | auto |
 
-Tensor 须同设备、连续 ND 布局；输入只读。T=0 不启动 CANN。
+适配层不额外限制输入类型、步长、设备、形状或标量值，支持范围与错误检查交由所选后端决定。示例采用 GLM 的 N=4、FP16/BF16 激活与 FP32 参数。T=0 不启动 CANN，返回空 Tensor（hin 为输入激活类型，post/res 为 FP32）。
 
 | 返回 | 类型 | 形状与类型 |
 | --- | --- | --- |
-| output | tuple[Tensor,Tensor,Tensor] | (hin [T,D] in x.dtype, hpost [T,4] FP32, hres [T,4,4] FP32) |
+| output | tuple[Tensor,Tensor,Tensor] | (hin [T,D] in vendor dtype for cann, hpost [T,N] FP32, hres [T,N,N] FP32) |
 
 ## cann
 
-依赖 CANN 9.1 的公开 Python API，首次非空执行时加载缓存；错误直接上抛，不回退旧算子。arch35 暂未开放。
+依赖 CANN 9.1 的公开 Python API，首次非空执行时加载缓存；错误直接上抛，不回退旧算子。不设置额外架构白名单，但不代表已经确认硬件支持或完成 NPU 验证。
 
-适配层将输入扩为 BSND，返回时去掉序列维；D 须 128 对齐且不超过 100000。
+适配层将 [T,N,D] 扩为 [T,1,N,D] 的 BSND 布局，返回时去掉序列维。保留 vendor 输出类型，激活类型转换留给 SGLang 调用方，与 GitCode glmx PR #21 一致。
 
 ## torch_native
 

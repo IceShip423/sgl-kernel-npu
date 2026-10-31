@@ -4,7 +4,7 @@
 
 | Implementation | arch22 | arch35 |
 | --- | --- | --- |
-| cann | Unverified | Unsupported |
+| cann | Unverified | Unverified |
 | torch_native | Unverified on NPU | Unverified on NPU |
 
 ## Signature
@@ -28,27 +28,27 @@ For u = flatten(x), z = (u / sqrt(mean(u**2) + norm_eps)) @ phi.T. Split z into 
 
 | Parameter | Type | Constraint | Default |
 | --- | --- | --- | --- |
-| x | Tensor | [T,4,D], FP16/BF16 | required |
-| phi | Tensor | [24,4*D], FP32 | required |
+| x | Tensor | [T,N,D], FP16/BF16 | required |
+| phi | Tensor | [(2+N)*N,N*D], FP32 | required |
 | alpha | Tensor | [3], FP32 | required |
-| bias | Tensor | [24], FP32 | required |
-| hc_mult | int | 4 only | 4 |
-| num_iters | int | 20 only | 20 |
-| hc_eps | float | finite, positive | 1e-6 |
-| norm_eps | float | finite, positive | 1e-6 |
+| bias | Tensor | [(2+N)*N], FP32 | required |
+| hc_mult | int | Number of streams N; backend-defined support | 4 |
+| num_iters | int | Sinkhorn iterations; backend-defined support | 20 |
+| hc_eps | float | Forwarded to backend | 1e-6 |
+| norm_eps | float | Forwarded to backend | 1e-6 |
 | impl | str | auto / cann / torch_native | auto |
 
-All tensors must be contiguous, on one device (NPU for cann), ND layout; inputs are read-only. T=0 returns correctly typed empty tensors without launching CANN.
+The facade forwards inputs without imposing additional dtype, stride, device, shape or scalar restrictions. The selected backend determines supported inputs and reports errors. The examples use GLM stream count N=4 and FP16/BF16 activations with FP32 parameters. T=0 returns empty tensors without launching CANN (activation dtype for hin, FP32 for post/res).
 
 | Return | Type | Shape and dtype |
 | --- | --- | --- |
-| output | tuple[Tensor,Tensor,Tensor] | (hin [T,D] in x.dtype, hpost [T,4] FP32, hres [T,4,4] FP32) |
+| output | tuple[Tensor,Tensor,Tensor] | (hin [T,D] in vendor dtype for cann, hpost [T,N] FP32, hres [T,N,N] FP32) |
 
 ## cann
 
-Requires CANN 9.1's `cann_ops_transformer.ops.mhc_pre_sinkhorn` public API. Imported and cached on first nonempty execution. Missing dependency and execution errors propagate; legacy custom_ops is never used. The registry restricts cann/auto to arch22 pending arch35 validation.
+Requires CANN 9.1's `cann_ops_transformer.ops.mhc_pre_sinkhorn` public API. Imported and cached on first nonempty execution. Missing dependency and execution errors propagate; legacy custom_ops is never used. No architecture whitelist is imposed; this does not establish hardware support or completed NPU validation.
 
-The facade expands [T,4,D] to [T,1,4,D] for the vendor BSND wrapper and squeezes the singleton sequence dimension of each output. D must be 128-aligned and <=100000.
+The facade expands [T,N,D] to [T,1,N,D] for the vendor BSND wrapper and squeezes the singleton sequence dimension of each output. Output dtypes are preserved; any activation conversion belongs to the SGLang caller, matching GitCode glmx PR #21.
 
 ## torch_native
 

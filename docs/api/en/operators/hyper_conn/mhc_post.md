@@ -4,7 +4,7 @@
 
 | Implementation | arch22 | arch35 |
 | --- | --- | --- |
-| cann | Unverified | Unsupported |
+| cann | Unverified | Unverified |
 | torch_native | Unverified on NPU | Unverified on NPU |
 
 ## Signature
@@ -26,21 +26,21 @@ Compute y[t,i,d] = h_post[t,i] * h_out[t,d] + sum_j h_res[t,i,j] * x[t,j,d] in F
 
 | Parameter | Type | Constraint | Default |
 | --- | --- | --- | --- |
-| x | Tensor | [T,4,D], FP16/BF16 | required |
-| h_res | Tensor | [T,4,4], FP32 | required |
+| x | Tensor | [T,N,D], FP16/BF16 | required |
+| h_res | Tensor | [T,N,N], FP32 | required |
 | h_out | Tensor | [T,D], same dtype as x | required |
-| h_post | Tensor | [T,4], FP32 | required |
+| h_post | Tensor | [T,N], FP32 | required |
 | impl | str | auto / cann / torch_native | auto |
 
-All tensors must be contiguous, on one device (NPU for cann), ND layout; inputs are read-only. T=0 returns correctly typed empty tensors without launching CANN.
+The facade forwards inputs without imposing additional dtype, stride, device, shape or scalar restrictions. The selected backend determines supported inputs and reports errors. The examples use GLM stream count N=4 and FP16/BF16 activations with FP32 parameters. T=0 returns empty tensors without launching CANN (same dtype as x).
 
 | Return | Type | Shape and dtype |
 | --- | --- | --- |
-| output | Tensor | y [T,4,D], same dtype as x |
+| output | Tensor | y [T,N,D], vendor dtype for cann |
 
 ## cann
 
-Requires CANN 9.1's `cann_ops_transformer.ops.mhc_post` public API. Imported and cached on first nonempty execution. Missing dependency and execution errors propagate; legacy custom_ops is never used. The registry restricts cann/auto to arch22 pending arch35 validation.
+Requires CANN 9.1's `cann_ops_transformer.ops.mhc_post` public API. Imported and cached on first nonempty execution. Missing dependency and execution errors propagate; legacy custom_ops is never used. No architecture whitelist is imposed; this does not establish hardware support or completed NPU validation.
 
 Argument order matches the vendor API: residual streams, residual matrix, layer output, post gates.
 

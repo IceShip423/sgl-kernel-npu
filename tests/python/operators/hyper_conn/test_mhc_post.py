@@ -47,14 +47,3 @@ def test_mhc_post(tokens, hidden, mode, dtype):
         executor,
         enable_perf=(tokens, hidden) in perf_shape and dtype == torch.bfloat16,
     )
-
-
-@pytest.mark.extra_checks
-@pytest.mark.parametrize("index", [0, 1, 2, 3])
-def test_reject_noncontiguous_inputs(index):
-    from sgl_kernel_npu.operators.hyper_conn import mhc_post
-
-    inputs = list(generate_data(3, 128, torch.bfloat16, "normal"))
-    inputs[index] = torch.stack((inputs[index], inputs[index]), dim=-1)[..., 0]
-    with pytest.raises(ValueError, match="contiguous"):
-        mhc_post(*inputs)
